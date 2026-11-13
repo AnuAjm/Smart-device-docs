@@ -2,8 +2,7 @@
 
 ## 1. Introduction
 
-This guide explains the installation and
-basic setup of the Smart Control Device.
+This guide explains the installation, configuration, and maintenance of the Smart Control Device.
 
 ## 2. About the Product
 
