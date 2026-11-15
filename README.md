@@ -108,4 +108,5 @@ The target audience is divided into two following groups:
 - Build and publish a documentation website.
 - Demonstrate engineering collaboration workflows.
 
+### Note: 
 All product names, technical specifications, API definitions, and examples used in this project are fictional and created for learning and portfolio demonstration purposes.
