@@ -2,13 +2,11 @@
 
 ## Project Overview
 
-This repository demonstrates an end-to-end
-Docs-as-Code implementation for a fictional
-industrial monitoring platform.
+This repository demonstrates an end-to-end Docs-as-Code implementation for a fictional industrial monitoring platform.
 
-The project combines industrial product
-documentation with developer and API
-documentation.
+The platform is designed to help industrial users monitor connected equipment, configure devices, access operational information, and troubleshoot equipment-related issues.
+
+The project combines industrial product documentation with developer and API documentation, supported by documentation automation and engineering workflows.
 
 ## Project Type
 
@@ -19,6 +17,7 @@ The project demonstrates how technical documentation can be integrated into an e
 It combines industrial product documentation with developer-focused documentation to demonstrate practical documentation engineering capabilities.
 
 The project includes:
+
 - Documentation architecture and information design.
 - Version-controlled documentation using Git and GitHub.
 - Markdown-based authoring and reusable content.
@@ -29,7 +28,7 @@ The project includes:
 
 ## Documentation Scope
 
-The documentation is organized into two primary areas to support industrial platform users and software developers.
+The documentation is organized into three areas to support industrial platform users, software developers, and documentation quality processes.
 
 ### A. Industrial Product Documentation
 
@@ -61,7 +60,9 @@ Planned documentation includes:
 
 ### C. Documentation Engineering and Quality
 
-The project also covers the processes and tools used to maintain documentation quality throughout its lifecycle.
+Covers the processes and tools used to maintain documentation quality throughout its lifecycle.
+
+Planned activities include:
 
 - Version control and branch-based collaboration.
 - Documentation standards and contribution guidelines.
@@ -69,26 +70,23 @@ The project also covers the processes and tools used to maintain documentation q
 - Documentation builds and publishing through CI/CD pipelines.
 - Review, approval, and release management.
 
-### Industrial Product Documentation
-- Product introduction
-- Installation instructions
-- Configuration
-- Operation and maintenance
-- Safety information
-- Troubleshooting
-
-### Developer Documentation
-- Platform overview
-- API introduction
-- Authentication
-- API endpoints
-- Request and response examples
-- Error handling
-
 ## Target Audience
-The target audience is divided into two following groups:
-1. Platform documentation users: Industrial engineers, maintenance technicians, system integrators and software developers.
-2. Portfolio project reviewers: Technical writing managers, documentation leads, developer documentation teams, and hiring managers.
+
+The project addresses two primary audience groups:
+
+### Platform Documentation Users
+
+- **Industrial Engineers:** Understand platform capabilities, configure devices, and monitor industrial equipment.
+- **Maintenance Technicians:** Perform routine maintenance, identify faults, and follow troubleshooting procedures.
+- **System Integrators:** Configure the platform and integrate it with industrial systems and external applications.
+- **Software Developers:** Understand API functionality, authentication, data structures, and integration workflows.
+
+### Portfolio Project Reviewers
+
+- Technical writing managers.
+- Documentation leads.
+- Developer documentation teams.
+- Hiring managers evaluating documentation engineering capabilities.
 
 ## Technology Stack
 
@@ -107,6 +105,8 @@ The target audience is divided into two following groups:
 - Automate documentation quality checks.
 - Build and publish a documentation website.
 - Demonstrate engineering collaboration workflows.
+- Establish repeatable documentation review and release processes.
 
-### Note: 
-All product names, technical specifications, API definitions, and examples used in this project are fictional and created for learning and portfolio demonstration purposes.
+## Project Note
+
+This is an independent learning and portfolio project. All product names, technical specifications, API definitions, and examples are fictional and created for learning and demonstration purposes.
