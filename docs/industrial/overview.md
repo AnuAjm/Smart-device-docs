@@ -1,3 +1,4 @@
+
 # Smart Industrial Monitoring Platform – Overview
 
 ## 1. Introduction
