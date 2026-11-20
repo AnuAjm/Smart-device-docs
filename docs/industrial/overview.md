@@ -77,7 +77,6 @@ This document describes the conceptual architecture and capabilities of the fict
 
 Actual device compatibility, communication protocols, supported parameters, performance limits, and API functionality will be defined in the relevant technical documentation as the project develops.
 
-
 ## 8. System Architecture
 
 The following diagram illustrates the high-level data flow between industrial devices, the communication gateway, the monitoring platform, and its users.
@@ -91,3 +90,4 @@ flowchart TD
     D --> F[Industrial Engineers]
     D --> G[Maintenance Technicians]
     E --> H[External Applications]
+```
