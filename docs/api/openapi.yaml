@@ -1,0 +1,147 @@
+
+openapi: 3.0.3
+
+info:
+  title: Smart Industrial Monitoring Platform API
+  version: 1.0.0
+  description: >
+    API for retrieving industrial device information,
+    monitoring device status, and accessing sensor measurements.
+
+servers:
+  - url: https://api.smartmonitor.example/v1
+    description: Fictional production server
+
+tags:
+  - name: Devices
+    description: Operations related to industrial devices
+  - name: Measurements
+    description: Operations related to device measurements
+  - name: Alerts
+    description: Operations related to device alerts
+
+paths:
+  /devices:
+    get:
+      tags:
+        - Devices
+      summary: List industrial devices
+      description: Retrieves a list of industrial devices registered in the monitoring platform.
+      operationId: listDevices
+
+      security:
+        - bearerAuth: []
+
+      parameters:
+        - name: page
+          in: query
+          description: Page number to retrieve.
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+
+        - name: pageSize
+          in: query
+          description: Number of devices to return per page.
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+
+      responses:
+        "200":
+          description: A list of industrial devices.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Device"
+                  page:
+                    type: integer
+                    example: 1
+                  pageSize:
+                    type: integer
+                    example: 20
+
+        "401":
+          description: Authentication credentials are missing or invalid.
+
+  /devices/{deviceId}:
+    get:
+      tags:
+        - Devices
+      summary: Get an industrial device
+      description: Retrieves details for a specific industrial device.
+      operationId: getDeviceById
+
+      security:
+        - bearerAuth: []
+
+      parameters:
+        - name: deviceId
+          in: path
+          description: Unique identifier of the device.
+          required: true
+          schema:
+            type: string
+          example: DEV-1001
+
+      responses:
+        "200":
+          description: Device details retrieved successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Device"
+
+        "401":
+          description: Authentication credentials are missing or invalid.
+
+        "404":
+          description: The specified device was not found. device was not found.
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    Device:
+      type: object
+      required:
+        - deviceId
+        - name
+        - status
+      properties:
+        deviceId:
+          type: string
+          description: Unique identifier assigned to the device.
+          example: DEV-1001
+
+        name:
+          type: string
+          description: User-defined name of the industrial device.
+          example: Main Panel Temperature Sensor
+
+        status:
+          type: string
+          description: Current operational status of the device.
+          enum:
+            - online
+            - offline
+            - warning
+          example: online
+
+        location:
+          type: string
+          description: Physical or logical location of the device.
+          example: Main Electrical Room
