@@ -74,6 +74,9 @@ paths:
         "401":
           description: Authentication credentials are missing or invalid.
 
+        "400":
+          description: Invalid pagination parameter values.
+
   /devices/{deviceId}:
     get:
       tags:
@@ -113,7 +116,10 @@ paths:
       tags:
         - Measurements
       summary: Get device measurements
-      description: Retrieves sensor measurements for a specific industrial device.
+      description: >
+        Retrieves sensor measurements for a specific industrial device.
+        Results can be filtered by a date and time range and retrieved
+        using pagination.
       operationId: getDeviceMeasurements
 
       security:
@@ -130,7 +136,9 @@ paths:
 
         - name: startTime
           in: query
-          description: Start of the measurement time range in ISO 8601 format.
+          description: >
+            Start of the measurement time range in ISO 8601 format.
+            Must be earlier than or equal to endTime when both are provided.
           required: false
           schema:
             type: string
@@ -139,7 +147,9 @@ paths:
 
         - name: endTime
           in: query
-          description: End of the measurement time range in ISO 8601 format.
+          description: >
+            End of the measurement time range in ISO 8601 format.
+            Must be later than or equal to startTime when both are provided.
           required: false
           schema:
             type: string
@@ -183,6 +193,9 @@ paths:
                   pageSize:
                     type: integer
                     example: 20
+
+        "400":
+          description: Invalid date range or query parameter values.
 
         "401":
           description: Authentication credentials are missing or invalid.
