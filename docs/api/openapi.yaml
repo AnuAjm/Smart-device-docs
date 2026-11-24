@@ -10,7 +10,7 @@ info:
 
 servers:
   - url: https://api.smartmonitor.example/v1
-    description: Fictional production server
+    description: Example server (not a live API)
 
 tags:
   - name: Devices
@@ -74,6 +74,9 @@ paths:
         "401":
           description: Authentication credentials are missing or invalid.
 
+        "400":
+          description: Invalid pagination parameter values.
+
   /devices/{deviceId}:
     get:
       tags:
@@ -106,7 +109,100 @@ paths:
           description: Authentication credentials are missing or invalid.
 
         "404":
-          description: The specified device was not found. device was not found.
+          description: The specified device was not found.
+
+  /devices/{deviceId}/measurements:
+    get:
+      tags:
+        - Measurements
+      summary: Get device measurements
+      description: >
+        Retrieves sensor measurements for a specific industrial device.
+        Results can be filtered by a date and time range and retrieved
+        using pagination.
+      operationId: getDeviceMeasurements
+
+      security:
+        - bearerAuth: []
+
+      parameters:
+        - name: deviceId
+          in: path
+          description: Unique identifier of the device.
+          required: true
+          schema:
+            type: string
+          example: DEV-1001
+
+        - name: startTime
+          in: query
+          description: >
+            Start of the measurement time range in ISO 8601 format.
+            Must be earlier than or equal to endTime when both are provided.
+          required: false
+          schema:
+            type: string
+            format: date-time
+          example: "2026-11-20T08:00:00Z"
+
+        - name: endTime
+          in: query
+          description: >
+            End of the measurement time range in ISO 8601 format.
+            Must be later than or equal to startTime when both are provided.
+          required: false
+          schema:
+            type: string
+            format: date-time
+          example: "2026-11-20T10:00:00Z"
+
+        - name: page
+          in: query
+          description: Page number to retrieve.
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+
+        - name: pageSize
+          in: query
+          description: Number of measurements to return per page.
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+
+      responses:
+        "200":
+          description: Measurement records retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Measurement"
+                  page:
+                    type: integer
+                    example: 1
+                  pageSize:
+                    type: integer
+                    example: 20
+
+        "400":
+          description: Invalid date range or query parameter values.
+
+        "401":
+          description: Authentication credentials are missing or invalid.
+
+        "404":
+          description: The specified device was not found.
+
 components:
   securitySchemes:
     bearerAuth:
@@ -145,3 +241,45 @@ components:
           type: string
           description: Physical or logical location of the device.
           example: Main Electrical Room
+
+    Measurement:
+      type: object
+      required:
+        - measurementId
+        - deviceId
+        - metric
+        - value
+        - unit
+        - timestamp
+      properties:
+        measurementId:
+          type: string
+          description: Unique identifier of the measurement record.
+          example: MEAS-5001
+
+        deviceId:
+          type: string
+          description: Identifier of the device that produced the measurement.
+          example: DEV-1001
+
+        metric:
+          type: string
+          description: Name of the measured parameter.
+          example: temperature
+
+        value:
+          type: number
+          format: double
+          description: Recorded measurement value.
+          example: 42.6
+
+        unit:
+          type: string
+          description: Unit of measurement.
+          example: "°C"
+
+        timestamp:
+          type: string
+          format: date-time
+          description: Date and time when the measurement was recorded.
+          example: "2026-11-20T09:15:00Z"
