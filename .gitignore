@@ -1,1 +1,5 @@
 site/
+
+# Python generated files
+__pycache__/
+*.pyc
