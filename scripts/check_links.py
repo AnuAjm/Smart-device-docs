@@ -6,6 +6,7 @@ import sys
 import requests
 from terminology_rules import PREFERRED_TERMS, PROHIBITED_TERMS
 from measurement_rules import check_measurement_spacing
+from safety_rules import validate_safety_file
 
 DOCS_DIR = Path(__file__).resolve().parent.parent / "docs"
 TIMEOUT = 10
@@ -216,6 +217,19 @@ def check_measurements():
     return measurement_issues
 
 
+def check_safety_messages():
+    """Validate required components in the safety-message document."""
+    safety_file = DOCS_DIR / "industrial" / "safety-messages.md"
+
+    if not safety_file.exists():
+        return [(safety_file, "Safety document not found")]
+
+    issues = validate_safety_file(safety_file)
+
+    return [
+        (safety_file, issue)
+        for issue in issues
+    ]
 
 if __name__ == "__main__":
     (
@@ -228,8 +242,9 @@ if __name__ == "__main__":
     missing_headings = check_required_headings()
     terminology_issues = check_terminology()
     measurement_issues = check_measurements()
+    safety_issues = check_safety_messages()
 
-    print("\nDOCUMENTATION LINK QA REPORT")
+    print("\nDOCUMENTATION QA REPORT")
     print("=" * 35)
     print(f"Markdown files scanned: {files_scanned}")
     print(f"Links checked: {links_checked}")
@@ -238,15 +253,7 @@ if __name__ == "__main__":
     print(f"Missing required headings: {len(missing_headings)}")
     print(f"Terminology issues: {len(terminology_issues)}")
     print(f"Measurement formatting issues: {len(measurement_issues)}")
-
-if measurement_issues:
-    print("\nMEASUREMENT FORMATTING ISSUES")
-
-    for file_path, line_number, found_value, preferred_value in measurement_issues:
-        print(f"File: {file_path}")
-        print(f"Line: {line_number}")
-        print(f"Found: {found_value}")
-        print(f"Preferred format: {preferred_value}\n")
+    print(f"Safety-message issues: {len(safety_issues)}")
 
     if missing_headings:
         print("\nMISSING REQUIRED HEADINGS")
@@ -256,16 +263,32 @@ if measurement_issues:
 
     if terminology_issues:
         print("\nTERMINOLOGY ISSUES")
+        for file_path, line_number, found_term, preferred_term, issue_type in terminology_issues:
+            print(f"File: {file_path}")
+            print(f"Line: {line_number}")
+            print(f"Found: {found_term}")
+            if preferred_term:
+                print(f"Preferred term: {preferred_term}")
+            print(f"Issue: {issue_type}\n")
 
-    for file_path, line_number, found_term, preferred_term, issue_type in terminology_issues:
-        print(f"File: {file_path}")
-        print(f"Line: {line_number}")
-        print(f"Found: {found_term}")
+    if measurement_issues:
+        print("\nMEASUREMENT FORMATTING ISSUES")
+        for file_path, line_number, found_value, preferred_value in measurement_issues:
+            print(f"File: {file_path}")
+            print(f"Line: {line_number}")
+            print(f"Found: {found_value}")
+            print(f"Preferred format: {preferred_value}\n")
 
-        if preferred_term:
-            print(f"Preferred term: {preferred_term}")
-
-        print(f"Issue: {issue_type}\n")
+    if safety_issues:
+        print("\nSAFETY-MESSAGE ISSUES")
+        for file_path, issue in safety_issues:
+            print(f"File: {file_path.relative_to(DOCS_DIR)}")
+            if isinstance(issue, dict):
+                print(f"Message type: {issue['message_type']}")
+                print(f"Section heading line: {issue['line']}")
+                print(f"Issue: {issue['issue']}\n")
+            else:
+                print(f"Issue: {issue}\n")
 
     if broken_local:
         print("\nBROKEN LOCAL LINKS")
@@ -278,29 +301,29 @@ if measurement_issues:
             print(f"File: {source_file.relative_to(DOCS_DIR)}")
             print(f"Link: {link}")
             print(f"Reason: {reason}\n")
-   
-if (
-    broken_local
-    or broken_external
-    or missing_headings
-    or terminology_issues
-    or measurement_issues
-):
-    print("\nRESULT: FAILED - Documentation QA issues detected.")
 
-    if broken_local or broken_external:
-        print("- Link validation failed.")
+    if (
+        broken_local
+        or broken_external
+        or missing_headings
+        or terminology_issues
+        or measurement_issues
+        or safety_issues
+    ):
+        print("\nRESULT: FAILED - Documentation QA issues detected.")
 
-    if missing_headings:
-        print("- Required heading validation failed.")
+        if broken_local or broken_external:
+            print("- Link validation failed.")
+        if missing_headings:
+            print("- Required heading validation failed.")
+        if terminology_issues:
+            print("- Terminology validation failed.")
+        if measurement_issues:
+            print("- Measurement formatting validation failed.")
+        if safety_issues:
+            print("- Safety-message validation failed.")
 
-    if terminology_issues:
-        print("- Terminology validation failed.")
+        sys.exit(1)
 
-    if measurement_issues:
-        print("- Measurement formatting validation failed.")
-
-    sys.exit(1)
-
-print("\nRESULT: PASSED - All documentation QA checks passed.")
-sys.exit(0)
+    print("\nRESULT: PASSED - All documentation QA checks passed.")
+    sys.exit(0)

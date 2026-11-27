@@ -21,6 +21,7 @@ nav:
       - Configuration: industrial/configuration.md
       - Operation: industrial/operation.md
       - Troubleshooting: industrial/troubleshooting.md
+      - Safety Messages: industrial/safety-messages.md
 
   - Developer Documentation:
       - Overview: developer/overview.md
