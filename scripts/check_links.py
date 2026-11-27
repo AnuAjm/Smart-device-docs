@@ -7,6 +7,7 @@ import requests
 from terminology_rules import PREFERRED_TERMS, PROHIBITED_TERMS
 from measurement_rules import check_measurement_spacing
 from safety_rules import validate_safety_file
+from content_quality_rules import check_duplicate_headings
 
 DOCS_DIR = Path(__file__).resolve().parent.parent / "docs"
 TIMEOUT = 10
@@ -231,6 +232,18 @@ def check_safety_messages():
         for issue in issues
     ]
 
+def check_duplicate_headings_in_docs():
+    """Check all Markdown documentation files for duplicate headings."""
+    duplicate_issues = []
+
+    for file_path in DOCS_DIR.rglob("*.md"):
+        issues = check_duplicate_headings(file_path)
+
+        for issue in issues:
+            duplicate_issues.append((file_path, issue))
+
+    return duplicate_issues
+
 if __name__ == "__main__":
     (
         files_scanned,
@@ -243,6 +256,7 @@ if __name__ == "__main__":
     terminology_issues = check_terminology()
     measurement_issues = check_measurements()
     safety_issues = check_safety_messages()
+    duplicate_heading_issues = check_duplicate_headings_in_docs()
 
     print("\nDOCUMENTATION QA REPORT")
     print("=" * 35)
@@ -254,6 +268,7 @@ if __name__ == "__main__":
     print(f"Terminology issues: {len(terminology_issues)}")
     print(f"Measurement formatting issues: {len(measurement_issues)}")
     print(f"Safety-message issues: {len(safety_issues)}")
+    print(f"Duplicate heading issues: {len(duplicate_heading_issues)}")
 
     if missing_headings:
         print("\nMISSING REQUIRED HEADINGS")
@@ -301,6 +316,16 @@ if __name__ == "__main__":
             print(f"File: {source_file.relative_to(DOCS_DIR)}")
             print(f"Link: {link}")
             print(f"Reason: {reason}\n")
+    
+    if duplicate_heading_issues:
+        print("\nDUPLICATE HEADING ISSUES")
+
+        for file_path, issue in duplicate_heading_issues:
+            print(f"File: {file_path.relative_to(DOCS_DIR)}")
+            print(f"Heading: {issue['heading']}")
+            print(f"Level: {issue['level']}")
+            print(f"First occurrence: Line {issue['first_line']}")
+            print(f"Duplicate occurrence: Line {issue['duplicate_line']}\n")
 
     if (
         broken_local
@@ -309,6 +334,7 @@ if __name__ == "__main__":
         or terminology_issues
         or measurement_issues
         or safety_issues
+        or duplicate_heading_issues
     ):
         print("\nRESULT: FAILED - Documentation QA issues detected.")
 
@@ -322,6 +348,8 @@ if __name__ == "__main__":
             print("- Measurement formatting validation failed.")
         if safety_issues:
             print("- Safety-message validation failed.")
+        if duplicate_heading_issues:
+            print("- Duplicate heading validation failed.")
 
         sys.exit(1)
 
